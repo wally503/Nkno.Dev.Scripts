@@ -1,0 +1,6 @@
+CREATE LOGIN ef_core
+WITH PASSWORD = 'password555';
+GO
+
+CREATE DATABASE act
+GO

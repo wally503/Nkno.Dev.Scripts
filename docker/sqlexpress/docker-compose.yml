@@ -1,6 +1,3 @@
-version: '3.8'
-
-
 volumes:
   sqlserver_data:
   
@@ -9,15 +6,16 @@ services:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=${Sa_Password:-password123}
+      - SA_PASSWORD=password123
+      # - SA_PASSWORD=${Sa_Password:-password}
       - MSSQL_PID=Developer
     ports:
-      - 1433:1433
+      - 14330:1433
     volumes:
       - sqlserver_data:/var/opt/mssql
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${Sa_Password:-password123} -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P password123 -Q 'SELECT 1' || exit 1"]
       interval: 10s
       retries: 10
       start_period: 10s
@@ -31,6 +29,6 @@ services:
         condition: service_healthy
     command: >
       bash -c '
-      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P ${Sa_Password:-password123} -d master -i docker-entrypoint-initdb.d/init.sql;
-      echo "All done!";
+      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P password123 -d master -i docker-entrypoint-initdb.d/init.sql;
+      echo "Users and Databases Initialized!";
       '
